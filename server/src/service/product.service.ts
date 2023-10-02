@@ -11,7 +11,7 @@ export async function findProduct(
   query: FilterQuery<Product>,
   options: QueryOptions = { lean: true }
 ) {
-  return ProductModel.find(query, {}, options);
+  return ProductModel.findOne(query, {}, options);
 }
 
 export async function findAndUpdateProduct(
