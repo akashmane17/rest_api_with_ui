@@ -1,16 +1,27 @@
 require("dotenv").config();
 import express from "express";
-import config from "config"
+import cors from "cors";
+import config from "config";
 import connect from "./utils/connect";
 import log from "./utils/logger";
 import router from "./routes";
-import  deserializeUser from "./middleware/deserializeUser";
+import deserializeUser from "./middleware/deserializeUser";
+import cookieParser from "cookie-parser";
 
 // create app using express
 const app = express();
 
 // It parses incoming JSON requests and puts the parsed data in req.body
 app.use(express.json());
+
+app.use(cookieParser());
+
+app.use(
+  cors({
+    origin: config.get("origin"),
+    credentials: true,
+  })
+);
 
 // this middlware will be called for every endpoint
 app.use(deserializeUser);
@@ -27,5 +38,4 @@ app.listen(port, async () => {
 
   // Connect to database
   await connect();
-
 });

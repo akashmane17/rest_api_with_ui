@@ -1,5 +1,8 @@
 import express, { Request, Response } from "express";
-import { createUserHandler } from "./controller/user.controller";
+import {
+  createUserHandler,
+  getCurrentUser,
+} from "./controller/user.controller";
 import validateResource from "./middleware/validateResources";
 import { createUserSchema } from "./schema/user.schema";
 import {
@@ -35,6 +38,9 @@ router.post(
   validateResource(createUserSchema),
   createUserHandler
 );
+
+// get User
+router.get("/api/me", requireUser, getCurrentUser);
 
 // create Session
 router.post(
