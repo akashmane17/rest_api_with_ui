@@ -11,6 +11,16 @@
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
+.sub {
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0;
+  background-color: #dadada;
+  border-radius: 20px;
+}
+
 span {
   font-size: 1.5rem;
   font-weight: 500;

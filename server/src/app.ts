@@ -14,8 +14,10 @@ const app = express();
 // It parses incoming JSON requests and puts the parsed data in req.body
 app.use(express.json());
 
+// to use cookies
 app.use(cookieParser());
 
+//
 app.use(
   cors({
     origin: config.get("origin"),

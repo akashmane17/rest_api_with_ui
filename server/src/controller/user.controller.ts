@@ -1,14 +1,12 @@
-import { Request, Response } from 'express';
-import log from '../utils/logger';
-import {omit} from 'lodash';
-import { createUser } from '../service/user.service';
-import { CreateUserInput } from '../schema/user.schema';
+import { Request, Response } from "express";
+import log from "../utils/logger";
+import { createUser } from "../service/user.service";
+import { CreateUserInput } from "../schema/user.schema";
 
 /**
- * 
- * @param req http request
- * @param res http response
- * @returns if user created successfully then returns user else return error message
+ * @desc Create User
+ * @route POST /api/users
+ * @access Public
  */
 export async function createUserHandler(
   req: Request<{}, {}, CreateUserInput>,
@@ -23,7 +21,16 @@ export async function createUserHandler(
   }
 }
 
+/**
+ * @desc Get Current User
+ * @route GET /api/me
+ * @access Private
+ */
 export async function getCurrentUser(req: Request, res: Response) {
-
-  return res.send(res.locals.user);
+  const user = res.locals.user;
+  return res.json({
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+  });
 }

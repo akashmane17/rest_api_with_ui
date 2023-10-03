@@ -8,6 +8,7 @@ const deserializeUser = async (
   res: Response,
   next: NextFunction
 ) => {
+  // get access and refresh token
   const accessToken =
     get(req, "cookies.accessToken") ||
     get(req, "headers.authorization", "").replace(/^Bearer\s/, "");
@@ -19,6 +20,7 @@ const deserializeUser = async (
     return next();
   }
 
+  // decode access token
   const { decoded, expired } = verifyJwt(accessToken);
 
   if (decoded) {
@@ -26,9 +28,12 @@ const deserializeUser = async (
     return next();
   }
 
+  // if access token is expired and refresh token is present
   if (expired && refreshToken) {
+    // create new access token
     const newAccessToken = await reIssueAccessToken({ refreshToken });
 
+    // set accesstoken to cookies
     if (newAccessToken) {
       res.setHeader("x-access-token", newAccessToken);
 
@@ -42,8 +47,8 @@ const deserializeUser = async (
       });
     }
 
+    // set user to locals
     const result = verifyJwt(newAccessToken as string);
-
     res.locals.user = result.decoded;
     return next();
   }

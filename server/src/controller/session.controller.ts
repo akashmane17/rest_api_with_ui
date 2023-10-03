@@ -8,6 +8,11 @@ import {
 import { validatePassword } from "../service/user.service";
 import { signJwt } from "../utils/jwt.utils";
 
+/**
+ * @desc Create a new session
+ * @route POST /api/sessions
+ * @access Public
+ */
 export async function createUserSessionHandler(req: Request, res: Response) {
   // Validate the user's password
   const user = await validatePassword(req.body);
@@ -23,7 +28,6 @@ export async function createUserSessionHandler(req: Request, res: Response) {
   );
 
   // create an access token
-
   const accessToken = signJwt(
     { ...user, session: session._id },
     { expiresIn: config.get("accessTokenTtl") } // 15 minutes
@@ -35,8 +39,7 @@ export async function createUserSessionHandler(req: Request, res: Response) {
     { expiresIn: config.get("refreshTokenTtl") } // 15 minutes
   );
 
-  // return access & refresh tokens
-
+  // set cookies
   res.cookie("accessToken", accessToken, {
     maxAge: 900000, // 15 mins
     httpOnly: true,
@@ -58,6 +61,11 @@ export async function createUserSessionHandler(req: Request, res: Response) {
   return res.send({ accessToken, refreshToken });
 }
 
+/**
+ * @desc Get session
+ * @route GET /api/sessions/:id
+ * @access Private
+ */
 export async function getUserSessionsHandler(req: Request, res: Response) {
   const userId = res.locals.user._id;
 
@@ -66,10 +74,25 @@ export async function getUserSessionsHandler(req: Request, res: Response) {
   return res.send(sessions);
 }
 
+/**
+ * @desc Delete session
+ * @route DELETE /api/sessions/:id
+ * @access Private
+ */
 export async function deleteSessionHandler(req: Request, res: Response) {
   const sessionId = res.locals.user.session;
 
   await updateSession({ _id: sessionId }, { valid: false });
+
+  res.cookie("accessToken", "", {
+    httpOnly: true,
+    expires: new Date(0),
+  });
+
+  res.cookie("refreshToken", "", {
+    httpOnly: true,
+    expires: new Date(0),
+  });
 
   return res.send({
     accessToken: null,

@@ -13,6 +13,12 @@ import {
 } from "../service/product.service";
 import log from "../utils/logger";
 
+
+/**
+ * @desc Create a new product
+ * @route POST /api/products
+ * @access Private
+ */
 export async function createProductHandler(
   req: Request<{}, {}, CreateProductInput>,
   res: Response
@@ -31,6 +37,11 @@ export async function createProductHandler(
   }
 }
 
+/**
+ * @desc Update a product
+ * @route PUT /api/products/:productId
+ * @access Private
+ */
 export async function updateProductHandler(
   req: Request<UpdateProductInput["params"]>,
   res: Response
@@ -61,6 +72,11 @@ export async function updateProductHandler(
   return res.send(updatedProduct);
 }
 
+/**
+ * @desc Get product
+ * @route GET /api/products/:productId
+ * @access Private
+ */
 export async function getProductHandler(
   req: Request<GetProductInput>,
   res: Response
@@ -76,6 +92,11 @@ export async function getProductHandler(
   res.send(product);
 }
 
+/**
+ * @desc Delete product
+ * @route DELETE /api/products/:productId
+ * @access Private
+ */
 export async function deleteProductHandler(
   req: Request<DeleteProductInput>,
   res: Response
